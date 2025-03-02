@@ -1,0 +1,26 @@
+version: "3.8"
+
+services:
+  backend:
+    image: gutenberg-backend
+    container_name: gutenberg-backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    expose:
+      - "8000"
+
+  nginx:
+    image: gutenberg-nginx
+    container_name: gutenberg-nginx
+    build:
+      context: .
+      dockerfile: nginx/Dockerfile
+      args:
+        API_HOST_URL: http://localhost:8080/api
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
